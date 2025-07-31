@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('edit', id=project.id) }}">
+    <section class="header">
+        <h1> Project Title:
+            <input type="text" name="title" value="{{ project.title }}" 
+                   style="background: rgb(255, 255, 255); border: 1px solid black; color: inherit; font: inherit;" required>
+        </h1>
+        <p> Date Created
+            <input type="date" name="date_created" 
+                   value="{{ project.date_created.strftime('%Y-%m-%d') if project.date_created else '' }}"
+                   style="background: white; border: 1px solid black; color: inherit; font: inherit;">
+        </p>
+        GitHub Link:
+        <input type="url" id="github_link" name="github_link" value="{{ project.github_link }}" 
+               placeholder="GitHub Link" 
+               style="background: white; border: 1px solid black; color: inherit; font: inherit; field-sizing: content;" required>
+        <input type="url" id="github_link" name="github_link" value="{{ project.github_link }}" 
+               style="display: none;" required>
+        Skills Learnt:
+        <input type="text" name="skills_learnt" value="{{ project.skills_learnt }}" 
+               placeholder="Skills (separate with commas)" 
+               style="background: white; border: 1px solid black; color: inherit; font: inherit; field-sizing: content; margin-top: 10px;" required>
+    </section>
+    
+    <section id="project-desc">
+        <div id="triangle5"></div>
+        <h2>Description</h2>
+        <textarea name="description" required
+                  style="background: white; border: 1px solid black; color: inherit; font: inherit; width: 67%; min-height: 100px; resize: vertical;">{{ project.description }}</textarea>
+        <div id="triangle6"></div>
+    </section>
+    
+    <section id="save-cancel" class="button-section">
+        <button type="submit">
+            <i class="fas fa-save"></i>
+            Save Changes
+        </button>
+        <a href="{{ url_for('detail', id=project.id) }}">
+            <i class="fas fa-times"></i>
+            Cancel
+        </a>
+    </section>
+</form>
+{% endblock %}
