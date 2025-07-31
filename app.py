@@ -7,7 +7,8 @@ import datetime
 def check_db_exists():
     if len(Project.query.all()) > 3:
         return
-    
+    # if not then add these 4
+    # I could have done some kind of check to my github but I think that was beyond the scope of this project
     else :
         initialized_project = []
 
@@ -42,10 +43,23 @@ def index():
     return render_template('index.html', projects=projects)
 
 
-@app.route('/project/new')
+@app.route('/project/new', methods=['GET', 'POST'])
 def new_project():
     projects = Project.query.all()
-    return render_template('create.html', projects=projects)
+    
+    if request.method == 'POST':
+        new_project = Project(
+            title=request.form['title'],
+            date_created=datetime.datetime.strptime(request.form['date_created'], '%Y-%m-%d') if request.form['date_created'] else None,
+            description=request.form['description'],
+            skills_learnt=request.form['skills_learnt'],
+            github_link=request.form['github_link']
+        )
+        db.session.add(new_project)
+        db.session.commit()
+        return redirect(url_for('index'))
+    
+    return render_template('add.html', projects=projects)
 
 
 @app.route('/project/<id>')
@@ -61,7 +75,6 @@ def edit(id):
     projects = Project.query.all()
     
     if request.method == 'POST':
-        # Update the project with form data
         project.title = request.form['title']
         project.description = request.form['description']
         project.skills_learnt = request.form['skills_learnt']
@@ -76,11 +89,29 @@ def edit(id):
     
     return render_template('edit.html', project=project, projects=projects)
 
-@app.route('/project/<id>/delete')
+@app.route('/project/<id>/delete', methods=['GET', 'POST'])
 def delete(id):
     project = Project.query.get_or_404(id)
     projects = Project.query.all()
+    
+    if request.method == 'POST':
+        db.session.delete(project)
+        db.session.commit()
+        return redirect(url_for('index'))
+    
     return render_template('delete.html', project=project, projects=projects)
+
+
+@app.route('/about')
+def about():
+    projects = Project.query.all()
+    return render_template('about.html', projects=projects)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    projects = Project.query.all()
+    return render_template('404.html', projects=projects), 404
 
 
 if __name__ == '__main__':

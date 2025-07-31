@@ -2,34 +2,40 @@
 
 {% block content %}
 <section class="header">
-            <h1>{{project.title}}</h1>
-            <p>{{ project.date_created.strftime('%b %Y') }}</p>
-            <a href="{{project.github_link}}" class="github-btn">
-                <i class="fab fa-github"></i>
-                View on GitHub
-            </a>
-            <ul class="project-skills">
-                {% for skill in project.skills_learnt.split(', ') %}
-                    <li>{{ skill.strip() }}</li>
-                {% endfor %}
-            </ul>
-        </section>
-        <section id="project-desc">
-            <div id="triangle5"></div>
-            <h2>Description</h2>
-            <p>
-                {{ project.description }}
-            </p>
-            <div id="triangle6"></div>
-        </section>
-        <section id="edit-delete">
-            <a href="{{ url_for('edit', id=project.id) }}">
-                <i class="fas fa-edit"></i>
-                Edit
-            </a>
-            <a href="{{ url_for('delete', id=project.id) }}">
-                <i class="far fa-trash-alt"></i>
-                Delete
-            </a>
-        </section>
+    <h1>Delete "{{ project.title }}"?</h1>
+    <p>This will permanently delete this project. This cannot be undone.</p>
+</section>
+
+<style>
+    #edit-delete {
+        text-align: center ;
+    }
+    /* I honestly have had so much $%@^#$%ing trouble with this delete button to get it to look like the rest of them. I think I spent about 2 hours on this. It made me want to cry ='( */
+    #edit-delete button {
+        background-color: #dc3545;
+        border-radius: 10px;
+        color: white;
+        padding: 13px 35px;
+        font-size: 20px;
+        cursor: pointer;
+        font-family: 'Roboto', Arial, Helvetica, sans-serif;
+        font-weight: normal;
+        line-height: normal;
+        margin: 0;
+        margin-right: 20px;
+        display: inline-block;
+    }
+    
+    #edit-delete a {
+        margin-left: 60px;
+    }
+</style>
+<section id="edit-delete">
+    <form method="POST" action="{{ url_for('delete', id=project.id) }}" style="display: inline;">
+        <button type="submit">Yes, Delete</button>
+    </form>
+    <a href="{{ url_for('detail', id=project.id) }}">
+        Cancel
+    </a>
+</section>
 {% endblock %}
